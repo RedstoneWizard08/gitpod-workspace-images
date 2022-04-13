@@ -125,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: [dart, dotnet, dotnet-lts, dotnet-lts-vnc, dotnet-vnc, flutter, gecko, mdbook, mongodb, mysql, postgres, wasm]
+        image: [dart, dotnet, dotnet-lts, dotnet-lts-vnc, dotnet-vnc, flutter, gecko, gitpod-dev-image, mdbook, mongodb, mysql, postgres, wasm]
       fail-fast: false
     permissions:
       contents: read
