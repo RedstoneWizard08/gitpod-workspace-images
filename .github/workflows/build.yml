@@ -74,7 +74,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base
+            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base:${{ github.base_ref }}
   build-full-vnc:
     needs: [build-full]
     runs-on: ubuntu-latest
@@ -113,7 +113,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full
+            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full:${{ github.base_ref }}
   build-others:
     needs: [build-full-vnc]
     runs-on: ubuntu-latest
@@ -156,6 +156,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base
-            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full
-            FULL_VNC_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full-vnc
+            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base:${{ github.base_ref }}
+            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full:${{ github.base_ref }}
+            FULL_VNC_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full-vnc:${{ github.base_ref }}
