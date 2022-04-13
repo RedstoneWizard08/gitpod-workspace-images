@@ -19,7 +19,8 @@ RUN curl -o /var/lib/apt/dazzle-marks/llvm.gpg -fsSL https://apt.llvm.org/llvm-s
         clang-format \
         clang-tidy \
         gdb \
-        lld
+        lld \
+        bash
 
 ### Apache, PHP and Nginx ###
 LABEL dazzle/layer=tool-nginx
@@ -63,6 +64,7 @@ LABEL dazzle/test=tests/tool-brew.yaml
 USER gitpod
 # Dazzle does not rebuild a layer until one of its lines are changed. Increase this counter to rebuild this layer.
 ENV TRIGGER_BREW_REBUILD=5
+SHELL [ "/bin/bash", "-c" ]
 RUN mkdir ~/.cache && \
     if [ "$(uname -m)" == "aarch64" ]; then exit 0; fi && \
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
