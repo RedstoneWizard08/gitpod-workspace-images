@@ -1,4 +1,5 @@
-FROM gitpod/workspace-full-vnc:latest
+ARG FULL_VNC_IMAGE
+FROM ${FULL_VNC_IMAGE}
 
 USER gitpod
 

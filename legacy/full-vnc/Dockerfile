@@ -1,4 +1,5 @@
-FROM gitpod/workspace-full:latest
+ARG FULL_IMAGE
+FROM ${FULL_IMAGE}
 
 # Install Xvfb, JavaFX-helpers, Openbox window manager and emacs GTK
 RUN sudo install-packages xvfb x11vnc xterm openjfx libopenjfx-java openbox \

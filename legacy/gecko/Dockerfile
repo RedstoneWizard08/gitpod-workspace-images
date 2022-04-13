@@ -1,4 +1,5 @@
-FROM gitpod/workspace-full-vnc
+ARG FULL_VNC_IMAGE
+FROM ${FULL_VNC_IMAGE}
 
 # Install the latest rr.
 RUN __RR_VERSION__="5.5.0" \

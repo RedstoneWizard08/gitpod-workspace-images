@@ -1,5 +1,6 @@
 # Dazzle do not supports ARG TRIGGER_REBUILD=2
-FROM gitpod/workspace-base:latest
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 RUN echo "ws full starts"
 
@@ -79,7 +80,7 @@ ENV GO_VERSION=1.17.3
 ENV GOPATH=$HOME/go-packages
 ENV GOROOT=$HOME/go
 ENV PATH=$GOROOT/bin:$GOPATH/bin:$PATH
-RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar xzs && \
+RUN curl -fsSL https://go.dev/dl/go$GO_VERSION.linux-$(dpkg --print-architecture).tar.gz | tar xzs && \
 # install VS Code Go tools for use with gopls as per https://github.com/golang/vscode-go/blob/master/docs/tools.md
 # also https://github.com/golang/vscode-go/blob/27bbf42a1523cadb19fad21e0f9d7c316b625684/src/goTools.ts#L139
     go get -v \
@@ -223,19 +224,20 @@ ENV TRIGGER_REBUILD=3
 # https://docs.docker.com/engine/install/ubuntu/
 RUN curl -o /var/lib/apt/dazzle-marks/docker.gpg -fsSL https://download.docker.com/linux/ubuntu/gpg \
     && apt-key add /var/lib/apt/dazzle-marks/docker.gpg \
-    && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+    && add-apt-repository "deb https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
     && install-packages docker-ce docker-ce-cli containerd.io
 
 RUN curl -o /usr/bin/slirp4netns -fsSL https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.12/slirp4netns-$(uname -m) \
     && chmod +x /usr/bin/slirp4netns
 
-RUN curl -o /usr/local/bin/docker-compose -fsSL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64 \
+RUN curl -o /usr/local/bin/docker-compose -fsSL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-$(uname -m) \
     && chmod +x /usr/local/bin/docker-compose
 
+# Disabled since it does not have support for arm64. I am looking into compiling this on my own.
 # https://github.com/wagoodman/dive
-RUN curl -o /tmp/dive.deb -fsSL https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb \
-    && apt install /tmp/dive.deb \
-    && rm /tmp/dive.deb
+# RUN curl -o /tmp/dive.deb -fsSL https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb \
+#     && apt install /tmp/dive.deb \
+#     && rm /tmp/dive.deb
 
 ### Install Tailscale ###
 LABEL dazzle/layer=tool-tailscale
@@ -282,7 +284,11 @@ RUN . /home/gitpod/.nix-profile/etc/profile.d/nix.sh \
 LABEL dazzle/layer=dazzle-prologue
 LABEL dazzle/test=tests/prologue.yaml
 USER root
-RUN curl -o /usr/bin/dazzle-util -fsSL https://github.com/csweichel/dazzle/releases/download/v0.0.3/dazzle-util_0.0.3_Linux_x86_64 \
+RUN ARCH=$(uname -m) \
+    case $ARCH in \
+        aarch64) ARCH=arm64 ;; \
+    esac \
+    && curl -o /usr/bin/dazzle-util -fsSL https://github.com/csweichel/dazzle/releases/download/v0.0.3/dazzle-util_0.0.3_Linux_$ARCH \
     && chmod +x /usr/bin/dazzle-util
 # merge dpkg status files
 RUN cp /var/lib/dpkg/status /tmp/dpkg-status \

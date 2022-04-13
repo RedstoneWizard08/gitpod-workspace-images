@@ -1,4 +1,5 @@
-FROM gitpod/workspace-full:latest
+ARG FULL_IMAGE
+FROM ${FULL_IMAGE}
 
 USER gitpod
 
