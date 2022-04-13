@@ -55,6 +55,11 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lowercase repo
+        id: string
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
@@ -69,7 +74,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            BASE_IMAGE=${{ env.REGISTRY }}/${{ github.repository }}/base
+            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base
   build-full-vnc:
     needs: [build-full]
     runs-on: ubuntu-latest
@@ -89,6 +94,11 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lowercase repo
+        id: string
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
@@ -103,7 +113,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            FULL_IMAGE=${{ env.REGISTRY }}/${{ github.repository }}/full
+            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full
   build-others:
     needs: [build-full-vnc]
     runs-on: ubuntu-latest
@@ -127,6 +137,11 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lowercase repo
+        id: string
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
@@ -141,6 +156,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            BASE_IMAGE=${{ env.REGISTRY }}/${{ github.repository }}/base
-            FULL_IMAGE=${{ env.REGISTRY }}/${{ github.repository }}/full
-            FULL_VNC_IMAGE=${{ env.REGISTRY }}/${{ github.repository }}/full-vnc
+            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base
+            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full
+            FULL_VNC_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full-vnc
