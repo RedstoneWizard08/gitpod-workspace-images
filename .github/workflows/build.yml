@@ -28,6 +28,8 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/base
+          tags: |
+            latest
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
@@ -65,6 +67,8 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/full
+          tags: |
+            latest
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
@@ -74,7 +78,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base:${{ github.base_ref }}
+            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base
   build-full-vnc:
     needs: [build-full]
     runs-on: ubuntu-latest
@@ -104,6 +108,8 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/full-vnc
+          tags: |
+            latest
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
@@ -113,7 +119,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full:${{ github.base_ref }}
+            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full
   build-others:
     needs: [build-full-vnc]
     runs-on: ubuntu-latest
@@ -147,6 +153,8 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.image }}
+          tags: |
+            latest
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
@@ -156,6 +164,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args:
-            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base:${{ github.base_ref }}
-            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full:${{ github.base_ref }}
-            FULL_VNC_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full-vnc:${{ github.base_ref }}
+            BASE_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/base
+            FULL_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full
+            FULL_VNC_IMAGE=${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}/full-vnc
